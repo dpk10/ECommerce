@@ -1,12 +1,14 @@
 import React from 'react'
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
     const [loading, setLoading] = useState(false)
+    const navigate=useNavigate();
 //   const [profileImage, setProfileImage] = useState<File | null>(null)
 
 
@@ -54,42 +56,47 @@ const [formData, setFormData] = useState({
       const handleSubmit = async (e) => {
         e.preventDefault();
     
-        const form = new FormData();
-        form.append("fname", formData.fname);
-        form.append("lname", formData.lname);
-        form.append("email", formData.email);
-        form.append("profileImage", formData.profileImage);
-        form.append("phone", formData.phone);
-        form.append("password", formData.password);
-        form.append("address[shipping][street]", formData.shippingStreet);
-        form.append("address[shipping][city]", formData.shippingCity);
-        form.append("address[shipping][pincode]", formData.shippingPincode);
-        form.append("address[billing][street]", formData.billingStreet);
-        form.append("address[billing][city]", formData.billingCity);
-        form.append("address[billing][pincode]", formData.billingPincode);
+        // const form = new FormData();
+        // form.append("fname", formData.fname);
+        // form.append("lname", formData.lname);
+        // form.append("email", formData.email);
+        // form.append("profileImage", formData.profileImage);
+        // form.append("phone", formData.phone);
+        // form.append("password", formData.password);
+        // form.append("address[shipping][street]", formData.shippingStreet);
+        // form.append("address[shipping][city]", formData.shippingCity);
+        // form.append("address[shipping][pincode]", formData.shippingPincode);
+        // form.append("address[billing][street]", formData.billingStreet);
+        // form.append("address[billing][city]", formData.billingCity);
+        // form.append("address[billing][pincode]", formData.billingPincode);
     
         try {
           const response = await axios.post(
             "https://shopping-cart-yp6d.onrender.com/register",
-            form,
+            formData,
             {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+              headers: {"Content-Type": "application/json"}
+            });
           alert("Registration successful!");
           console.log(response.data);
         } catch (error) {
           console.error(error);
           alert("Error during registration!");
         }
-      };  
+      };
+      
+  //To store value in local storage
+  
+  const handleRegister=(e)=>{
+    e.preventDefault();
+    localStorage.setItem("user",JSON.stringify(formData));
+      navigate("/login")
+  }
     
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleRegister}
       className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full"
     >
       <h2 className="text-2xl font-bold text-center mb-6">Registration Form</h2>
