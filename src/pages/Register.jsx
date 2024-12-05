@@ -3,13 +3,15 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
     const [loading, setLoading] = useState(false)
     const navigate=useNavigate();
-//   const [profileImage, setProfileImage] = useState<File | null>(null)
+  const [profileImage, setProfileImage] = useState(null)
 
 
 const [formData, setFormData] = useState({
@@ -50,40 +52,60 @@ const [formData, setFormData] = useState({
       const handleFileChange = (e) => {
         setFormData({ ...formData, profileImage: e.target.files[0] });
       };
-
-      // 
+  //     const handleFileChange = (e) => {
+  //   setProfileImage(e.target.files[0]);
+  // };
+      
       
       const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // const form = new FormData();
-        // form.append("fname", formData.fname);
-        // form.append("lname", formData.lname);
-        // form.append("email", formData.email);
-        // form.append("profileImage", formData.profileImage);
-        // form.append("phone", formData.phone);
-        // form.append("password", formData.password);
-        // form.append("address[shipping][street]", formData.shippingStreet);
-        // form.append("address[shipping][city]", formData.shippingCity);
-        // form.append("address[shipping][pincode]", formData.shippingPincode);
-        // form.append("address[billing][street]", formData.billingStreet);
-        // form.append("address[billing][city]", formData.billingCity);
-        // form.append("address[billing][pincode]", formData.billingPincode);
+        const form = new FormData();
+        form.append("fname", formData.fname);
+        form.append("lname", formData.lname);
+        form.append("email", formData.email);
+        form.append("profileImage", formData.profileImage);
+        form.append("phone", formData.phone);
+        form.append("password", formData.password);
+        form.append("address[shipping][street]", formData.shippingStreet);
+        form.append("address[shipping][city]", formData.shippingCity);
+        form.append("address[shipping][pincode]", formData.shippingPincode);
+        form.append("address[billing][street]", formData.billingStreet);
+        form.append("address[billing][city]", formData.billingCity);
+        form.append("address[billing][pincode]", formData.billingPincode);
     
-        try {
-          const response = await axios.post(
-            "https://shopping-cart-yp6d.onrender.com/register",
-            formData,
-            {
-              headers: {"Content-Type": "application/json"}
-            });
-          alert("Registration successful!");
-          console.log(response.data);
-        } catch (error) {
-          console.error(error);
-          alert("Error during registration!");
-        }
-      };
+          
+    axios.post('https://shopping-cart-yp6d.onrender.com/register', form, {
+    
+      headers: { 'Content-Type': "multipart/form-data" }
+    })
+      .then((response) => {
+        const data=response.data._id;
+        // console.log("printing the id:", id)
+
+        toast.success('Registration successful!');
+        setIsRegistered(true);
+      })
+      .catch((error) => {
+        toast.error('Error registering. Please try again.');
+      });
+  };
+
+      //   try {
+      //     const response = await axios.post(
+      //       "https://shopping-cart-yp6d.onrender.com/register",
+      //       formData,
+      //       {
+      //         headers: {"Content-Type": "application/json"}
+      //       });
+      //     alert("Registration successful!");
+      //     console.log(response.data);
+      //   } catch (error) {
+      //     console.error(error);
+      //     console.log(Response);
+      //     alert("Error during registration!");
+      //   }
+      // };
       
   //To store value in local storage
   
@@ -94,9 +116,11 @@ const [formData, setFormData] = useState({
   }
     
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+     
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr to-blue-400 from-green-500 p-10">
+     <ToastContainer />
     <form
-      onSubmit={handleRegister}
+      onSubmit={handleSubmit}
       className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full"
     >
       <h2 className="text-2xl font-bold text-center mb-6">Registration Form</h2>

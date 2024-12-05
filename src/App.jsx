@@ -7,21 +7,37 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
+import Product from './components/Product'
 import ProtectedRoutes from './services/ProtectedRoutes'
 
 function App() {
   const [count, setCount] = useState(0)
+  const isLoggedIn=window.localStorage.getItem("loggedIn"); // check if logged in
+  const userType=window.localStorage.getItem("usertype");
 
   return (
     <>
       <Router>
-        <Navbar/>
+        <Navbar isLoggedIn={isLoggedIn} userType={userType}/>
           <Routes>
-          <Route path='register' element={<Register/>}/>
-          <Route path='login' element={<Login/>}/>
+            {/* Unauthorised routes */}
+            {!isLoggedIn && (
+              <>
+               <Route path='register' element={<Register/>}/>
+               <Route path='login' element={<Login/>}/>
+               <Route path='/home' element={<Login/>}/>
+
+              </>
+            )}
+         
           {/* Protected Routes */}
-          <Route path='/' element={<ProtectedRoutes/>}>
-          <Route path='/' element={<Home/>}/>
+          <Route element={<ProtectedRoutes/>}>
+          <Route path='register' element={<Navigate to={"/"}/>}/>
+          <Route path='login' element={<Navigate to={"/"}/>}/>
+          <Route path='/' element={<Navigate to={"/home"}/>}/>
+          <Route path='/home' element={<Home/>}/>
+          {/* <Route path='/product' element={<Product/>}/> */}
+
           </Route>
           </Routes>
         
